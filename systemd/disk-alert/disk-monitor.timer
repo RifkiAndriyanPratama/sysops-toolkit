@@ -1,0 +1,12 @@
+[Unit]
+Description=Lapor Disk Monitor tiap 10 menit
+
+[Timer]
+# 1 menit setelah server nyala
+OnBootSec=1min
+# Ulangi tiap 10 menit
+OnUnitActiveSec=10min
+Unit=disk-monitor.service
+
+[Install]
+WantedBy=timers.target
