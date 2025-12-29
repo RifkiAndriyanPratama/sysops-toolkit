@@ -2,7 +2,7 @@
 
 DOMAIN="rifki.test"
 DIR="/var/www/$DOMAIN/html"
-CONFIG_FILE="/etc/nginx/site-available/$DOMAIN"
+CONFIG_FILE="/etc/nginx/sites-available/$DOMAIN"
 
 # cek sudo
 if [[ $EUID -ne 0 ]]; then
@@ -14,7 +14,7 @@ echo "Memulai Automasi Deployment Web Server..."
 
 # update and install
 echo "Menginstall nginx..."
-apt update ? /dev/null 2>&1
+apt update > /dev/null 2>&1
 apt install nginx -y > /dev/null 2>&1
 systemctl  enable --now nginx
 
@@ -22,8 +22,8 @@ systemctl  enable --now nginx
 echo "Membuat direktori website di $DIR..."
 mkdir -p $DIR
 
-# permission 
-chmod -R $SUDO_USER:$SUDO_USER /var/www/$DOMAIN/html
+# permission
+chown -R $SUDO_USER:$SUDO_USER /var/www/$DOMAIN/html
 
 # make html file
 echo "Membuat file index.html..."
@@ -40,7 +40,7 @@ server {
   index index.html;
 
   location / {
-    try_files \$url \$url/ =404;
+    try_files \$uri \$uri/ =404;
   }
 }
 EOF
@@ -54,7 +54,7 @@ ln -s $CONFIG_FILE /etc/nginx/sites-enabled/
 
 # restart nginx
 echo "Restarting Nginx"
-nginx -t #cek config 
+nginx -t #cek config
 if [[ $? -eq 0 ]]; then
   systemctl restart nginx
   echo "sukses, website $DOMAIN telah aktif"
